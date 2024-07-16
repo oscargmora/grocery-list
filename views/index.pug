@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #[em Grocery List]
+
+  h2 The grocery list has the following record counts:
+
+  ul
+    li #[strong Categories:] !{category_count}
+    li #[strong Items:] !{item_count}

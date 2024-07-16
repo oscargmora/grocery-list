@@ -1,0 +1,78 @@
+#! /usr/bin/env node
+
+console.log(
+	'This script populates some items and categories to your database. Specified database as argument - e.g.: node sample-data "mongodb+srv://user:coolpassword@cluster0.lz91hw2.mongodb.net/grocery_list?retryWrites=true&w=majority"'
+);
+
+// Get arguments passed on command line
+const userArgs = process.argv.slice(2);
+
+const Category = require("./models/category");
+const Item = require("./models/item");
+
+const categories = [];
+const items = [];
+
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+
+const mongoDB = userArgs[0];
+
+main().catch((err) => console.log(err));
+
+async function main() {
+	console.log("Debug: About to connect");
+	await mongoose.connect(mongoDB);
+	console.log("Debug: Should be connected?");
+	await createCategories();
+	await createItems();
+	console.log("Debug: Closing mongoose");
+	mongoose.connection.close();
+}
+
+// We pass the index to the ...Create functions so that, for example,
+// genre[0] will always be the Fantasy genre, regardless of the order
+// in which the elements of promise.all's argument complete.
+async function categoryCreate(index, name, description) {
+	const categoryDetail = {
+		name: name,
+	};
+
+	if (description != false) categoryDetail.description = description;
+
+	const category = new Category(categoryDetail);
+	await category.save();
+	categories[index] = category;
+	console.log(`Added category: ${name}`);
+}
+
+async function itemCreate(index, name, description, category, price, amount) {
+	const itemDetail = {
+		name: name,
+		amount: amount,
+	};
+
+	if (description != false) itemDetail.description = description;
+	if (category != false) itemDetail.category = category;
+	if (price != false) itemDetail.price = price;
+
+	const item = new Item(itemDetail);
+
+	await item.save();
+	items[index] = item;
+	console.log(`Added item: ${name}`);
+}
+
+async function createCategories() {
+	console.log("Adding Categories");
+	await Promise.all([categoryCreate(0, "Food", false), categoryCreate(1, "Clothes", false)]);
+}
+
+async function createItems() {
+	console.log("Adding items");
+	await Promise.all([
+		itemCreate(0, "Bread", false, [categories[0]], false, 1),
+		itemCreate(1, "Eggs (Large Pack)", false, [categories[0]], false, 1),
+		itemCreate(2, "Lettuce", false, [categories[0]], false, 1),
+	]);
+}

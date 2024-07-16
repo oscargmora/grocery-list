@@ -1,0 +1,26 @@
+extends layout 
+
+block content 
+
+    h1 Item: #{item.name}
+
+    div(style='margin-left:20px;margin-top:20px')
+
+            dl 
+                li Amount: #{item.amount}
+                if item.price 
+                    li Price: #{item.price}
+                if item.description 
+                    li Description: #{item.description}
+                if item.category 
+                    li
+                        each val, index in item.category 
+                            a(href=val.url) #{val.name}
+                            if index < item.category.length - 1
+                                |,&nbsp;
+
+    hr
+    p 
+        a(href=item.url+'/delete') Delete item
+    p 
+        a(href=item.url+'/update') Update item
