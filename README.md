@@ -15,11 +15,9 @@
     <br />
     <br />
     <a href="https://github.com/oscargmora/grocery-list"><strong>Explore the docs »</strong></a>
-    <!--
     <br />
     <br />
-    <a href="https://oscargmora.github.io/Cinemalist/">View Demo</a>
-    -->
+    <a href="https://feline-coordinated-shingle.glitch.me/">View Demo</a>
   </p>
 </div>
 
